@@ -24,8 +24,14 @@ contract Degen is  ERC20{
         }
         _;
     }
+    modifier checkBalance(uint256 amount){
+        if(balanceOf(msg.sender)<amount){
+            revert("insuficient funds");
+        }
+        _;
+    }
     function reward(uint256 amount,address toPlayer)public onlyOwner(){
-        approve(player,amount);
+        approve(toPlayer,amount);
     }
 
     function transferToken(uint256 amount,address toPlayer)public{
@@ -39,11 +45,12 @@ contract Degen is  ERC20{
         transferFrom(owner,msg.sender,amount);
     }
 
-    function checkBalance()public{
-        return balanceOf[msg.sender];
+    function balance()public view returns (uint256){
+        return balanceOf(msg.sender);
     }
 
     function burnToken(uint256 amount)public checkBalance(amount){
-
+        
+        _burn(msg.sender,amount);
     }
 }
